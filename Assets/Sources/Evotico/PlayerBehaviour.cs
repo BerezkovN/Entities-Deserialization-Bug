@@ -9,14 +9,11 @@ namespace Enlighten.Evotico
 {
     public class PlayerBehaviour : MonoBehaviour
     {
-        public InputAction holdAction;
-        
         private EntityQuery playerQuery;
 
-        public void Start()
+        public void Awake()
         {
             EntityManager entityManger = World.DefaultGameObjectInjectionWorld.EntityManager;
-
             playerQuery = entityManger.CreateEntityQuery(new ComponentType[] { ComponentType.ReadOnly<PlayerTag>(), ComponentType.ReadOnly<LocalTransform>() });
         }
 
@@ -25,11 +22,6 @@ namespace Enlighten.Evotico
             var transforms = playerQuery.ToComponentDataArray<LocalTransform>(Unity.Collections.Allocator.Temp);
             this.transform.position = transforms[0].Position;
             transforms.Dispose();
-        }
-
-        public void OnHold()
-        {
-            Debug.Log("Test");
         }
     }
 

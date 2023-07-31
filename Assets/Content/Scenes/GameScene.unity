@@ -219,15 +219,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e02ae9918805744859e83aeba8a8c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdAction:
-    m_Name: Hold
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 1ad512b3-f2b8-4875-83e8-36eb9fde885c
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
 --- !u!1 &951180288
 GameObject:
   m_ObjectHideFlags: 0

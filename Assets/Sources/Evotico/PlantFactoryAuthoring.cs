@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enlighten.dotSprites;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
-namespace Enlighten.dotSprites
+namespace Enlighten.Evotico
 {
     public class PlantFactoryAuthoring : MonoBehaviour
     {
@@ -45,7 +46,7 @@ namespace Enlighten.dotSprites
                     currentHeight -= layer.heightDifference;
 
                     var layerObject = new GameObject("Layer_" + layer.sprite.name);
-                    layerObject.transform.position = new Vector3(0, 0, currentHeight + random.NextFloat(-0.1f, .1Df));
+                    layerObject.transform.position = new Vector3(0, 0, currentHeight + random.NextFloat(-0.1f, .1f));
                     
                     var spriteRenderer = layerObject.AddComponent<SpriteRenderer>();
                     spriteRenderer.sprite = layer.sprite;

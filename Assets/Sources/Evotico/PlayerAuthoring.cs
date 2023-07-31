@@ -14,34 +14,23 @@ namespace Enlighten.Evotico
     {
 
     }
+    
+    public struct PlayerTag : IComponentData
+    {
+
+    }
 
     public class PlayerBaker : Baker<PlayerAuthoring>
     {
         public override void Bake(PlayerAuthoring authoring)
         {
             SpriteRenderer spriteRenderer = authoring.GetComponent<SpriteRenderer>();
+            Entity playerEntity = GetEntity(TransformUsageFlags.Dynamic);
             
             SpriteAuthoringUtil.AddSpriteComponents(this, authoring, spriteRenderer);
-            AddComponent<PlayerTag>(GetEntity(TransformUsageFlags.Dynamic));
-
-            var scene = SceneManager.GetSceneAt(0);
-            var gameObjects = scene.GetRootGameObjects();
-
-            var playerGameObject = gameObjects.First(el => el.name == "Player");
-
-            if (playerGameObject == null)
-            {
-                Debug.LogError("[Evotico] Player object is not found in the main scene");
-                return;
-            }
-
-            // playerGameObject.GetComponent<PlayerBehaviour>().PlayerEntity = GetEntity(TransformUsageFlags.Dynamic);
+            AddComponent<PlayerTag>(playerEntity);
+            AddComponent<CreatureMovementComponent>(playerEntity);
         }
-    }
-
-    public struct PlayerTag : IComponentData
-    {
-
     }
 
 }
