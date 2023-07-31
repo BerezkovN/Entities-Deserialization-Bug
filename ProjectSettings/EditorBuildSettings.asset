@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Content/BugScene.unity
-    guid: 33983610adbdb5b49b2cb17cb54192a8
+    path: Assets/Sources/dotSprites/Tests/Scenes/Coins/CoinScene.unity
+    guid: dda537b016f0f784fa7bc448d7d19b83
   - enabled: 1
-    path: Assets/Content/BugSubScene.unity
-    guid: 7de7f49070795334b95e4779bdff48fa
+    path: Assets/Sources/dotSprites/Tests/Scenes/Coins/CoinSubScene.unity
+    guid: 98c457f6f2d10fc40983174a227639ef
   m_configObjects: {}

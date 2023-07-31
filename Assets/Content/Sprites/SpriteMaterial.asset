@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aadef4226f54c1d4faeed75b6232cb2f, type: 3}
+  m_Name: SpriteMaterial
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: c91e87af68079cc478bd3c75d1c82979, type: 3}
+  atlas: {fileID: 100100200, guid: c81f94caf37a5354ab8f9f633e6fee4c, type: 3}
+  growthRule:
+    rule: 0
+    threshold: 10
+  cpuShader: 0
