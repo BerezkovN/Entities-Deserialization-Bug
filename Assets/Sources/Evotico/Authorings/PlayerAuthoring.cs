@@ -29,7 +29,6 @@ namespace Enlighten.Evotico
             
             SpriteAuthoringUtil.AddSpriteComponents(this, authoring, spriteRenderer);
             AddComponent<PlayerTag>(playerEntity);
-            AddComponent<CreatureMovementComponent>(playerEntity);
         }
     }
 

@@ -48,6 +48,7 @@ namespace Sources.Evotico
                 if (isMoving)
                 {
                     direction = currentPosition - startPosition;
+                    direction = math.normalizesafe(direction);
                 }
             };
         }

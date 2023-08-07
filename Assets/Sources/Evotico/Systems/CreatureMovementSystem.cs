@@ -20,6 +20,7 @@ namespace Enlighten.Evotico
                     All = new ComponentType[]
                         {
                             ComponentType.ReadOnly<CreatureMovementComponent>(),
+                            ComponentType.ReadOnly<CreatureInfoComponent>(),
                             ComponentType.ReadOnly<LocalTransform>()
                         }
                 }
@@ -28,7 +29,10 @@ namespace Enlighten.Evotico
 
         public void OnUpdate(ref SystemState state)
         {
-            CreatureMovementJob job = new CreatureMovementJob();
+            CreatureMovementJob job = new CreatureMovementJob()
+            {
+                deltaTime = state.World.Time.DeltaTime
+            };
             job.ScheduleParallel(creatureQuery, state.Dependency).Complete();
         }
 
@@ -37,11 +41,19 @@ namespace Enlighten.Evotico
         private partial struct CreatureMovementJob : IJobEntity
         {
 
-            public void Execute(ref LocalTransform localTransform, in CreatureMovementComponent creatureMovementComponent)
+            public float deltaTime;
+            
+            public void Execute(ref LocalTransform localTransform, in CreatureMovementComponent creatureMovement, in CreatureInfoComponent creatureInfo)
             {
-                float angle = -(float)Math.Atan2(creatureMovementComponent.direction.x, creatureMovementComponent.direction.y);
+                if (!creatureMovement.isMoving)
+                {
+                    return;
+                }
+
+                float angle = -(float)Math.Atan2(creatureMovement.direction.x, creatureMovement.direction.y);
                 
                 localTransform.Rotation.value = quaternion.RotateZ(angle).value;
+                localTransform.Position.xy += creatureMovement.direction * creatureInfo.movementSpeed * deltaTime;
             }
         }
     }
