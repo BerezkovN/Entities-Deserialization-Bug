@@ -14,6 +14,8 @@ namespace Sources.Evotico
         private PlayerInput playerInput;
 
         private float2 startPosition;
+        
+        private float2 currentPosition;
         private float2 direction;
         private bool isMoving;
 
@@ -27,21 +29,26 @@ namespace Sources.Evotico
             playerInput = new PlayerInput();
             playerInput.Enable();
             
-            // Register the callback for when the Move action starts
-            playerInput.Player.Move.started += ctx => 
+            playerInput.Player.StartClick.performed += ctx =>
             {
-                //startPosition = 
-                
-                // Get the value of the Vector2 from the context and normalize it
-                direction = ctx.ReadValue<Vector2>().normalized;
+                startPosition = currentPosition;
                 isMoving = true;
             };
 
-            // Register the callback for when the Move action ends
-            playerInput.Player.Move.canceled += _ => 
+            playerInput.Player.EndClick.performed += ctx =>
             {
-                //direction = Vector2.zero;
+                startPosition = float2.zero;
                 isMoving = false;
+            };
+
+            playerInput.Player.CurrentPosition.performed += ctx => 
+            {
+                currentPosition = ctx.ReadValue<Vector2>();
+
+                if (isMoving)
+                {
+                    direction = currentPosition - startPosition;
+                }
             };
         }
 

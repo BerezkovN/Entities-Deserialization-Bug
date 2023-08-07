@@ -28,9 +28,27 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             ""id"": ""38d1cc82-e723-430f-84e2-a50cf0df8c00"",
             ""actions"": [
                 {
-                    ""name"": ""Move"",
+                    ""name"": ""StartClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""18807bbe-4ed7-4ab0-8ad7-b5105e977a21"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(pressPoint=1.401298E-45)"",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""EndClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""8d996f9b-5c57-45a7-a1bb-68013fea3e7e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(pressPoint=1.401298E-45,behavior=1)"",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CurrentPosition"",
                     ""type"": ""Value"",
-                    ""id"": ""8497dc49-852f-4084-850d-0a32e704f9ea"",
+                    ""id"": ""1171dd51-9820-4485-9f06-e0c8b19699f4"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -40,23 +58,67 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""ba5849c8-c936-48a4-b834-2b8902745d73"",
-                    ""path"": ""<Touchscreen>/primaryTouch/delta"",
+                    ""id"": ""de6e31df-131d-44b7-93ce-1339a80f9eb1"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""StartClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6adbb9d2-b027-43ad-8ee4-416fdbc8e6bf"",
-                    ""path"": ""<Mouse>/delta"",
+                    ""id"": ""86588e7f-6a56-4b36-bd9d-5dc78bd6ed19"",
+                    ""path"": ""<Touchscreen>/primaryTouch/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""StartClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""62c08d8a-5ac6-466d-8610-e07501c6f517"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CurrentPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab13d701-1731-43b8-9ea4-5e0b0e001e8d"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CurrentPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19de9f4d-2bf7-4ba2-b206-2fbdc75e737f"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb042d5f-a92d-422d-af40-53ee7f9fa9a1"",
+                    ""path"": ""<Touchscreen>/primaryTouch/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -67,7 +129,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
+        m_Player_StartClick = m_Player.FindAction("StartClick", throwIfNotFound: true);
+        m_Player_EndClick = m_Player.FindAction("EndClick", throwIfNotFound: true);
+        m_Player_CurrentPosition = m_Player.FindAction("CurrentPosition", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -129,12 +193,16 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_Move;
+    private readonly InputAction m_Player_StartClick;
+    private readonly InputAction m_Player_EndClick;
+    private readonly InputAction m_Player_CurrentPosition;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
         public PlayerActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Player_Move;
+        public InputAction @StartClick => m_Wrapper.m_Player_StartClick;
+        public InputAction @EndClick => m_Wrapper.m_Player_EndClick;
+        public InputAction @CurrentPosition => m_Wrapper.m_Player_CurrentPosition;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -144,16 +212,28 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
+            @StartClick.started += instance.OnStartClick;
+            @StartClick.performed += instance.OnStartClick;
+            @StartClick.canceled += instance.OnStartClick;
+            @EndClick.started += instance.OnEndClick;
+            @EndClick.performed += instance.OnEndClick;
+            @EndClick.canceled += instance.OnEndClick;
+            @CurrentPosition.started += instance.OnCurrentPosition;
+            @CurrentPosition.performed += instance.OnCurrentPosition;
+            @CurrentPosition.canceled += instance.OnCurrentPosition;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
         {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
+            @StartClick.started -= instance.OnStartClick;
+            @StartClick.performed -= instance.OnStartClick;
+            @StartClick.canceled -= instance.OnStartClick;
+            @EndClick.started -= instance.OnEndClick;
+            @EndClick.performed -= instance.OnEndClick;
+            @EndClick.canceled -= instance.OnEndClick;
+            @CurrentPosition.started -= instance.OnCurrentPosition;
+            @CurrentPosition.performed -= instance.OnCurrentPosition;
+            @CurrentPosition.canceled -= instance.OnCurrentPosition;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -173,6 +253,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     public PlayerActions @Player => new PlayerActions(this);
     public interface IPlayerActions
     {
-        void OnMove(InputAction.CallbackContext context);
+        void OnStartClick(InputAction.CallbackContext context);
+        void OnEndClick(InputAction.CallbackContext context);
+        void OnCurrentPosition(InputAction.CallbackContext context);
     }
 }

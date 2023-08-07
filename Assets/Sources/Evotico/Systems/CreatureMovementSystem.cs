@@ -39,9 +39,9 @@ namespace Enlighten.Evotico
 
             public void Execute(ref LocalTransform localTransform, in CreatureMovementComponent creatureMovementComponent)
             {
-                float angle = (float)Math.Atan2(creatureMovementComponent.direction.x, creatureMovementComponent.direction.y);
+                float angle = -(float)Math.Atan2(creatureMovementComponent.direction.x, creatureMovementComponent.direction.y);
                 
-                localTransform.Rotation.value = quaternion.RotateY(angle).value;
+                localTransform.Rotation.value = quaternion.RotateZ(angle).value;
             }
         }
     }
