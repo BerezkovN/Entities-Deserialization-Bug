@@ -55,7 +55,7 @@ namespace Enlighten.Evotico
                     //layerSprite.Sprite = layer.sprite;
                     layerSprite.SpriteMaterial = SpriteMaterial;
 
-                    layerObject.transform.localScale = new Vector3(layer.size, layer.size, layer.size);
+                    layerObject.transform.localScale = new Vector3(layer.size, layer.size, 1);
                     layerObject.transform.SetParent(plant.transform, false);
                 }
             }

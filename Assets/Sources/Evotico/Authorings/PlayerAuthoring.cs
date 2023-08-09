@@ -1,11 +1,7 @@
 using System.Diagnostics;
 using Enlighten.dotSprites;
 using Unity.Entities;
-using Unity.Transforms;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using System.Linq;
-using Debug = UnityEngine.Debug;
 
 namespace Enlighten.Evotico
 {

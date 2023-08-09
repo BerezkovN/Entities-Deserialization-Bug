@@ -10,6 +10,8 @@ namespace Sources.Evotico
     [UpdateInGroup(typeof(InitializationSystemGroup), OrderLast = true)]
     public partial class PlayerMovementSystem : SystemBase
     {
+        public float2 StartPosition => startPosition;
+        public bool IsMoving => isMoving;
         
         private PlayerInput playerInput;
 
@@ -69,6 +71,8 @@ namespace Sources.Evotico
                 WithoutBurst().
                 Run();
         }
+        
+
     }
 
 }
