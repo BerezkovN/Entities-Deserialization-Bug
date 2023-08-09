@@ -35,6 +35,8 @@ namespace Sources.Evotico
             {
                 startPosition = currentPosition;
                 isMoving = true;
+                
+                Debug.Log("[PlayerMovementSystem] startPosition: " + startPosition);
             };
 
             playerInput.Player.EndClick.performed += ctx =>
@@ -46,6 +48,7 @@ namespace Sources.Evotico
             playerInput.Player.CurrentPosition.performed += ctx => 
             {
                 currentPosition = ctx.ReadValue<Vector2>();
+                Debug.Log("[PlayerMovementSystem] currentPosition: " + currentPosition);
 
                 if (isMoving)
                 {
