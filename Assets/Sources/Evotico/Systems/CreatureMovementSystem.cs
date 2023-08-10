@@ -60,15 +60,19 @@ namespace Enlighten.Evotico
                     creatureMovement.currentSpeed = math.max(creatureMovement.currentSpeed, currentDesiredSpeed);
                 }
 
-                var movementVector = creatureMovement.currentDirection * creatureMovement.currentSpeed;
 
-                // float angle = -(float)math.atan2(creatureMovement.currentSpeed.x, creatureMovement.currentSpeed.y);
-                // localTransform.Rotation.value = quaternion.RotateZ(angle).value;
+                float rotationAcceleration = math.PI / creatureInfo.rotationTime * deltaTime;
+                var rotationVector = (creatureMovement.desiredDirection - creatureMovement.currentDirection) * rotationAcceleration;
 
-                //this.clampMagnitude(ref movementVector, currentDesiredSpeed);
-                float2 newPosition = localTransform.Position.xy + movementVector * deltaTime;
+                creatureMovement.currentDirection = math.normalize(creatureMovement.currentDirection + rotationVector);
                 
+                float angle = -math.atan2(creatureMovement.currentDirection.x, creatureMovement.currentDirection.y);
+                localTransform.Rotation.value = quaternion.RotateZ(angle).value;
+                
+                var movementVector = creatureMovement.currentDirection * creatureMovement.currentSpeed;
+                float2 newPosition = localTransform.Position.xy + movementVector * deltaTime;
                 localTransform.Position.xy = newPosition;
+
             }
 
             private float getDesiredSpeed(ref CreatureMovementType desiredMovementType, in CreatureInfoComponent creatureInfo)
