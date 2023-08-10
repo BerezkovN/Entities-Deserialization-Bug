@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -62,8 +63,12 @@ namespace Enlighten.Evotico
 
 
                 float rotationAcceleration = math.PI / creatureInfo.rotationTime * deltaTime;
-                var rotationVector = (creatureMovement.desiredDirection - creatureMovement.currentDirection) * rotationAcceleration;
-
+                var perpendicular = new float2(creatureMovement.currentDirection.y, -creatureMovement.currentDirection.x);
+                perpendicular *=
+                    isDesiredVectorToTheRight(creatureMovement.currentDirection, creatureMovement.desiredDirection) ? 1 : -1;
+                
+                var rotationVector = (perpendicular) * rotationAcceleration;
+                
                 creatureMovement.currentDirection = math.normalize(creatureMovement.currentDirection + rotationVector);
                 
                 float angle = -math.atan2(creatureMovement.currentDirection.x, creatureMovement.currentDirection.y);
@@ -73,6 +78,19 @@ namespace Enlighten.Evotico
                 float2 newPosition = localTransform.Position.xy + movementVector * deltaTime;
                 localTransform.Position.xy = newPosition;
 
+            }
+
+            private bool isDesiredVectorToTheRight(in float2 currentDirection, in float2 desiredDirection)
+            {
+                float cross = this.crossProductFloat2(currentDirection, desiredDirection);
+
+                return cross < 0;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private float crossProductFloat2(in float2 v1, in float2 v2)
+            {
+                return v1[0] * v2[1] - v1[1] * v2[0];
             }
 
             private float getDesiredSpeed(ref CreatureMovementType desiredMovementType, in CreatureInfoComponent creatureInfo)
