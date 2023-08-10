@@ -6,7 +6,10 @@ namespace Enlighten.Evotico
 
     public struct CreatureMovementComponent : IComponentData
     {
-        public float2 direction;
+        public CreatureMovementType movementType;
+        public float currentSpeed;
+        public float2 currentDirection;
+        public float2 desiredDirection;
         public bool isMoving;
     }
 

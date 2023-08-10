@@ -20,7 +20,10 @@ namespace Sources.Evotico
         private float2 currentPosition;
         private float2 direction;
         private bool isMoving;
-
+        
+        private CreatureMovementType movementState = CreatureMovementType.MOVE;
+        private CreatureMovementType currentMovementState = CreatureMovementType.STOP;
+        
         protected override void OnStartRunning()
         {
             if (playerInput != null)
@@ -33,22 +36,28 @@ namespace Sources.Evotico
             
             playerInput.Player.StartClick.performed += ctx =>
             {
+#if UNITY_ANDROID || UNITY_IPHONE
+                if (currentPosition.x < Screen.width / 2f)
+                {
+                    return;
+                }
+#endif
+                
                 startPosition = currentPosition;
                 isMoving = true;
-                
-                Debug.Log("[PlayerMovementSystem] startPosition: " + startPosition);
+                currentMovementState = movementState;
             };
 
             playerInput.Player.EndClick.performed += ctx =>
             {
                 startPosition = float2.zero;
                 isMoving = false;
+                currentMovementState = CreatureMovementType.STOP;
             };
 
             playerInput.Player.CurrentPosition.performed += ctx => 
             {
                 currentPosition = ctx.ReadValue<Vector2>();
-                Debug.Log("[PlayerMovementSystem] currentPosition: " + currentPosition);
 
                 if (isMoving)
                 {
@@ -68,7 +77,8 @@ namespace Sources.Evotico
             Entities.WithAll<PlayerTag, CreatureMovementComponent, LocalToWorld>().ForEach(
                 (ref CreatureMovementComponent movement) =>
                 {
-                    movement.direction = this.direction;
+                    movement.movementType = currentMovementState;
+                    movement.desiredDirection = this.direction;
                     movement.isMoving = this.isMoving;
                 }).
                 WithoutBurst().
