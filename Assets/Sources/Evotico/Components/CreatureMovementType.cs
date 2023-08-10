@@ -2,7 +2,8 @@ namespace Enlighten.Evotico
 {
     public enum CreatureMovementType
     {
-        STOP,
+        STAY,
+        STOPPING,
         CROUCH,
         MOVE,
         SPRINT

@@ -11,7 +11,7 @@ namespace Enlighten.Evotico
     public class CreatureAuthoring : MonoBehaviour
     {
         public float AccelerationTime;
-        public float RunningTime;
+        public float StoppingTime;
         public float RunningSpeed;
         public float MovementSpeed;
         public float CrouchSpeed;
@@ -28,14 +28,14 @@ namespace Enlighten.Evotico
             float rotation = authoring.transform.rotation.eulerAngles.z;
             AddComponent(creatureEntity, new CreatureMovementComponent()
             {
-                movementType = CreatureMovementType.STOP,
+                currentMovementType = CreatureMovementType.STAY,
                 currentDirection = new float2(-math.sin(rotation), math.cos(rotation))
             });
             AddComponent(creatureEntity, new CreatureInfoComponent()
             {
                 accelerationTime = authoring.AccelerationTime,
+                stoppingTime  = authoring.StoppingTime, 
                 runningSpeed  = authoring.RunningSpeed,
-                runningTime   = authoring.CrouchSpeed, 
                 movementSpeed = authoring.MovementSpeed,
                 crouchSpeed   = authoring.CrouchSpeed,
                 rotationTime = authoring.RotationTime

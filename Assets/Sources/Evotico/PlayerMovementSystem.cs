@@ -21,8 +21,8 @@ namespace Sources.Evotico
         private float2 direction;
         private bool isMoving;
         
+        private CreatureMovementType currentMovementState = CreatureMovementType.STAY;
         private CreatureMovementType movementState = CreatureMovementType.MOVE;
-        private CreatureMovementType currentMovementState = CreatureMovementType.STOP;
         
         protected override void OnStartRunning()
         {
@@ -52,7 +52,7 @@ namespace Sources.Evotico
             {
                 startPosition = float2.zero;
                 isMoving = false;
-                currentMovementState = CreatureMovementType.STOP;
+                currentMovementState = CreatureMovementType.STAY;
             };
 
             playerInput.Player.CurrentPosition.performed += ctx => 
@@ -77,7 +77,7 @@ namespace Sources.Evotico
             Entities.WithAll<PlayerTag, CreatureMovementComponent, LocalToWorld>().ForEach(
                 (ref CreatureMovementComponent movement) =>
                 {
-                    movement.movementType = currentMovementState;
+                    movement.desiredMovementType = this.currentMovementState;
                     movement.desiredDirection = this.direction;
                     movement.isMoving = this.isMoving;
                 }).

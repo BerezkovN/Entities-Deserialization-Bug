@@ -40,31 +40,26 @@ namespace Enlighten.Evotico
         [BurstCompile]
         private partial struct CreatureMovementJob : IJobEntity
         {
-            private static readonly float DEFAULT_ACCELERATION_TIME = 10f; 
+
             public float deltaTime;
             
             public void Execute(ref LocalTransform localTransform, ref CreatureMovementComponent creatureMovement, in CreatureInfoComponent creatureInfo)
             {
-                float currentDesiredSpeed = 0;
+                float currentDesiredSpeed = getDesiredSpeed(ref creatureMovement.desiredMovementType, in creatureInfo);
 
-                switch (creatureMovement.movementType)
+                bool isAccelerating = (currentDesiredSpeed >= creatureMovement.currentSpeed);
+
+                if (isAccelerating)
                 {
-                    case CreatureMovementType.STOP:
-
-                        if (creatureMovement.currentSpeed == 0) {
-                            return;
-                        }
-                        currentDesiredSpeed = 0;
-                        break;
-                    
-                    case CreatureMovementType.MOVE:
-                        currentDesiredSpeed = creatureInfo.movementSpeed;
-                        break;
+                    creatureMovement.currentSpeed += creatureInfo.runningSpeed / creatureInfo.accelerationTime * deltaTime;
+                    creatureMovement.currentSpeed = math.min(creatureMovement.currentSpeed, currentDesiredSpeed);
+                }
+                else
+                {
+                    creatureMovement.currentSpeed -= creatureInfo.runningSpeed / creatureInfo.stoppingTime * deltaTime;
+                    creatureMovement.currentSpeed = math.max(creatureMovement.currentSpeed, currentDesiredSpeed);
                 }
 
-                creatureMovement.currentSpeed += (currentDesiredSpeed / DEFAULT_ACCELERATION_TIME) * deltaTime;
-                creatureMovement.currentSpeed = math.min(creatureMovement.currentSpeed, currentDesiredSpeed);
-                
                 var movementVector = creatureMovement.currentDirection * creatureMovement.currentSpeed;
 
                 // float angle = -(float)math.atan2(creatureMovement.currentSpeed.x, creatureMovement.currentSpeed.y);
@@ -76,17 +71,17 @@ namespace Enlighten.Evotico
                 localTransform.Position.xy = newPosition;
             }
 
-            private void clampMagnitude(ref float2 vector, float maxLength)
+            private float getDesiredSpeed(ref CreatureMovementType desiredMovementType, in CreatureInfoComponent creatureInfo)
             {
-                float sqrMagnitude = math.lengthsq(vector);
-                if ((double) sqrMagnitude <= (double) maxLength * (double) maxLength)
-                    return;
-                
-                float num1 = (float) math.sqrt((double) sqrMagnitude);
-                float num2 = vector.x / num1;
-                float num3 = vector.y / num1;
-                vector.x = num2 * maxLength;
-                vector.y = num3 * maxLength;
+                switch (desiredMovementType)
+                {
+                    case CreatureMovementType.STAY:
+                        return 0;
+                    case CreatureMovementType.MOVE:
+                        return creatureInfo.movementSpeed;
+                }
+
+                return 0;
             }
         }
     }
