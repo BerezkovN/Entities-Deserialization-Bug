@@ -8466,10 +8466,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SkiddingAngle: 45
   AccelerationTime: 2
-  StoppingTime: 2
+  StoppingTime: 1.5
   RunningSpeed: 20
   MovementSpeed: 10
-  CrouchSpeed: 0
+  CrouchSpeed: 3
   RotationTime: 1
 --- !u!114 &1650755687
 MonoBehaviour:

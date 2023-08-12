@@ -99,8 +99,12 @@ namespace Enlighten.Evotico
                 {
                     case CreatureMovementType.STAY:
                         return 0;
+                    case CreatureMovementType.CROUCH:
+                        return creatureInfo.crouchSpeed;
                     case CreatureMovementType.MOVE:
                         return creatureInfo.movementSpeed;
+                    case CreatureMovementType.SPRINT:
+                        return creatureInfo.runningSpeed;
                 }
 
                 return 0;
