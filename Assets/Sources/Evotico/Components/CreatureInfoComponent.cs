@@ -6,6 +6,8 @@ namespace Enlighten.Evotico
 
     public struct CreatureInfoComponent : IComponentData
     {
+        public float skiddingAngle;
+        
         public float accelerationTime;
         public float stoppingTime;
         

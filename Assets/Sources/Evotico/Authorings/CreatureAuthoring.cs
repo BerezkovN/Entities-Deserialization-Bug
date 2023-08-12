@@ -10,8 +10,11 @@ namespace Enlighten.Evotico
     [RequireComponent(typeof(SpriteAuthoring))]
     public class CreatureAuthoring : MonoBehaviour
     {
+        public float SkiddingAngle;
+        
         public float AccelerationTime;
         public float StoppingTime;
+        
         public float RunningSpeed;
         public float MovementSpeed;
         public float CrouchSpeed;
@@ -33,6 +36,7 @@ namespace Enlighten.Evotico
             });
             AddComponent(creatureEntity, new CreatureInfoComponent()
             {
+                skiddingAngle = math.radians(authoring.SkiddingAngle),
                 accelerationTime = authoring.AccelerationTime,
                 stoppingTime  = authoring.StoppingTime, 
                 runningSpeed  = authoring.RunningSpeed,

@@ -46,10 +46,17 @@ namespace Enlighten.Evotico
             
             public void Execute(ref LocalTransform localTransform, ref CreatureMovementComponent creatureMovement, in CreatureInfoComponent creatureInfo)
             {
-                float currentDesiredSpeed = getDesiredSpeed(ref creatureMovement.desiredMovementType, in creatureInfo);
+                float currentDesiredSpeed = getDesiredSpeed(creatureMovement.desiredMovementType, in creatureInfo);
 
                 bool isAccelerating = (currentDesiredSpeed >= creatureMovement.currentSpeed);
+                float directionAngle = this.angle(creatureMovement.currentDirection, creatureMovement.desiredDirection);
 
+                if (math.abs(directionAngle) > creatureInfo.skiddingAngle)
+                {
+                    isAccelerating = false;
+                    currentDesiredSpeed = getDesiredSpeed(CreatureMovementType.STAY, in creatureInfo);
+                }
+                
                 if (isAccelerating)
                 {
                     creatureMovement.currentSpeed += creatureInfo.runningSpeed / creatureInfo.accelerationTime * deltaTime;
@@ -60,9 +67,7 @@ namespace Enlighten.Evotico
                     creatureMovement.currentSpeed -= creatureInfo.runningSpeed / creatureInfo.stoppingTime * deltaTime;
                     creatureMovement.currentSpeed = math.max(creatureMovement.currentSpeed, currentDesiredSpeed);
                 }
-
-                float directionAngle = this.angle(creatureMovement.currentDirection, creatureMovement.desiredDirection);
-
+                
                 if (math.abs(directionAngle) > 0.1f)
                 {
                     float rotationAcceleration = math.PI / creatureInfo.rotationTime * deltaTime;
@@ -88,20 +93,7 @@ namespace Enlighten.Evotico
                 return math.atan2(w.y * v.x - w.x * v.y, w.x * v.x + w.y * v.y);
             }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private float dot(float2 lhs, float2 rhs)
-            {
-                return (float)((double)lhs.x * (double)rhs.x + (double)lhs.y * (double)rhs.y);
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private double sqrMagnitude(float2 vec)
-            {
-                return (double) vec.x * (double) vec.x + (double) vec.y * (double) vec.y;
-            }
-            
-
-            private float getDesiredSpeed(ref CreatureMovementType desiredMovementType, in CreatureInfoComponent creatureInfo)
+            private float getDesiredSpeed(CreatureMovementType desiredMovementType, in CreatureInfoComponent creatureInfo)
             {
                 switch (desiredMovementType)
                 {

@@ -8464,6 +8464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2681e5957b8a43b9a54ebded8ce65f78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SkiddingAngle: 45
   AccelerationTime: 2
   StoppingTime: 2
   RunningSpeed: 20
