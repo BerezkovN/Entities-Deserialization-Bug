@@ -61,37 +61,45 @@ namespace Enlighten.Evotico
                     creatureMovement.currentSpeed = math.max(creatureMovement.currentSpeed, currentDesiredSpeed);
                 }
 
+                float directionAngle = this.angle(creatureMovement.currentDirection, creatureMovement.desiredDirection);
 
-                float rotationAcceleration = math.PI / creatureInfo.rotationTime * deltaTime;
-                var perpendicular = new float2(creatureMovement.currentDirection.y, -creatureMovement.currentDirection.x);
-                perpendicular *=
-                    isDesiredVectorToTheRight(creatureMovement.currentDirection, creatureMovement.desiredDirection) ? 1 : -1;
+                if (math.abs(directionAngle) > 0.1f)
+                {
+                    float rotationAcceleration = math.PI / creatureInfo.rotationTime * deltaTime;
+                    var perpendicular = new float2(creatureMovement.currentDirection.y, -creatureMovement.currentDirection.x);
+                    perpendicular *= -math.sign(directionAngle);
                 
-                var rotationVector = (perpendicular) * rotationAcceleration;
+                    var rotationVector = (perpendicular) * rotationAcceleration;
+                    creatureMovement.currentDirection = math.normalize(creatureMovement.currentDirection + rotationVector);
                 
-                creatureMovement.currentDirection = math.normalize(creatureMovement.currentDirection + rotationVector);
-                
-                float angle = -math.atan2(creatureMovement.currentDirection.x, creatureMovement.currentDirection.y);
-                localTransform.Rotation.value = quaternion.RotateZ(angle).value;
-                
+                    float finalAngle = -math.atan2(creatureMovement.currentDirection.x, creatureMovement.currentDirection.y);
+                    localTransform.Rotation.value = quaternion.RotateZ(finalAngle).value;
+                }
+
                 var movementVector = creatureMovement.currentDirection * creatureMovement.currentSpeed;
                 float2 newPosition = localTransform.Position.xy + movementVector * deltaTime;
                 localTransform.Position.xy = newPosition;
 
             }
 
-            private bool isDesiredVectorToTheRight(in float2 currentDirection, in float2 desiredDirection)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private float angle(float2 v, float2 w)
             {
-                float cross = this.crossProductFloat2(currentDirection, desiredDirection);
-
-                return cross < 0;
+                return math.atan2(w.y * v.x - w.x * v.y, w.x * v.x + w.y * v.y);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private float crossProductFloat2(in float2 v1, in float2 v2)
+            private float dot(float2 lhs, float2 rhs)
             {
-                return v1[0] * v2[1] - v1[1] * v2[0];
+                return (float)((double)lhs.x * (double)rhs.x + (double)lhs.y * (double)rhs.y);
             }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private double sqrMagnitude(float2 vec)
+            {
+                return (double) vec.x * (double) vec.x + (double) vec.y * (double) vec.y;
+            }
+            
 
             private float getDesiredSpeed(ref CreatureMovementType desiredMovementType, in CreatureInfoComponent creatureInfo)
             {

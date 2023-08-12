@@ -18,7 +18,7 @@ namespace Sources.Evotico
         private float2 startPosition;
         
         private float2 currentPosition;
-        private float2 direction;
+        private float2 direction = new float2(0, 1f);
         private bool isMoving;
         
         private CreatureMovementType currentMovementState = CreatureMovementType.STAY;

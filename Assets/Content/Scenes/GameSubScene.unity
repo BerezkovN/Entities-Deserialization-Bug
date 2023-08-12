@@ -8469,7 +8469,7 @@ MonoBehaviour:
   RunningSpeed: 20
   MovementSpeed: 10
   CrouchSpeed: 0
-  RotationTime: 4
+  RotationTime: 1
 --- !u!114 &1650755687
 MonoBehaviour:
   m_ObjectHideFlags: 0
