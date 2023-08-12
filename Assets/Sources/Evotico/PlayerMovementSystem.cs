@@ -4,6 +4,8 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 namespace Sources.Evotico
 {
@@ -41,28 +43,10 @@ namespace Sources.Evotico
             playerInput = new PlayerInput();
             playerInput.Enable();
 
-#if UNITY_ANDROID || UNITY_IPHONE
-            playerInput.Swipe.StartClick.performed += ctx =>
-            {
-                if (currentPosition.x < Screen.width / 2f)
-                {
-                    OnSwipeStart();
-                }
-            };
-
-            playerInput.Swipe.EndClick.performed += ctx =>
-            {
-                OnSwipeEnd();
-            };
-
-            playerInput.Swipe.CurrentPosition.performed += OnSwipeUpdate;
-#endif
-            
             playerInput.Player.StartClick.performed += ctx =>
             {
                 if (currentPosition.x < Screen.width / 2f)
                 {
-                    OnSwipeStart();
                     return;
                 }
 
@@ -125,19 +109,17 @@ namespace Sources.Evotico
                     (CreatureMovementType)math.max((int)(movementState - 1), (int)CreatureMovementType.CROUCH);
             }
 
+            currentMovementState = movementState;
             Debug.Log(movementState + " " + currentSwipePosition);
 
             isSwiping = false;
             swipeStartPosition = float2.zero;
         }
-        
-        protected override void OnStopRunning()
-        {
-            playerInput.Disable();
-        }
 
         protected override void OnUpdate()
         {
+            HandleSwipe();
+            
             Entities.WithAll<PlayerTag, CreatureMovementComponent, LocalToWorld>().ForEach(
                 (ref CreatureMovementComponent movement) =>
                 {
@@ -145,11 +127,40 @@ namespace Sources.Evotico
                     movement.desiredDirection = this.direction;
                     movement.isMoving = this.isMoving;
                 }).
-                WithoutBurst().
-                Run();
+            WithoutBurst().
+            Run();
         }
-        
 
+        private void HandleSwipe()
+        {
+            int touchIndex = isMoving ? 1 : 0;
+
+            TouchControl currentTouch = Touchscreen.current.touches[touchIndex];
+            
+            if (currentTouch.phase.value == TouchPhase.Began)
+            {
+                isSwiping = true;
+                swipeStartPosition = currentTouch.startPosition.value;
+                Debug.Log("Swipe start " + swipeStartPosition);
+                return;
+            }
+
+            if (isSwiping)
+            {
+                currentSwipePosition = currentTouch.position.value;
+                Debug.Log("Swipe update " + currentSwipePosition);
+            }
+
+            if (currentTouch.phase.value == TouchPhase.Ended)
+            {
+                OnSwipeEnd();
+            }
+        }
+
+        protected override void OnStopRunning()
+        {
+            playerInput.Disable();
+        }
     }
 
 }
