@@ -11,6 +11,7 @@ namespace Sources.Evotico
 {
 
     [UpdateInGroup(typeof(InitializationSystemGroup), OrderLast = true)]
+    [DisableAutoCreation]
     public partial class PlayerMovementSystem : SystemBase
     {
         public float2 StartPosition => startPosition;
@@ -89,7 +90,6 @@ namespace Sources.Evotico
             if (!isSwiping) return;
             
             currentSwipePosition = ctx.ReadValue<Vector2>();
-            Debug.Log("Swipe update " + currentSwipePosition);
         }
         
         private void OnSwipeEnd()
@@ -135,20 +135,23 @@ namespace Sources.Evotico
         {
             int touchIndex = isMoving ? 1 : 0;
 
+            if (Touchscreen.current == null)
+            {
+                return;
+            }
+            
             TouchControl currentTouch = Touchscreen.current.touches[touchIndex];
             
             if (currentTouch.phase.value == TouchPhase.Began)
             {
                 isSwiping = true;
                 swipeStartPosition = currentTouch.startPosition.value;
-                Debug.Log("Swipe start " + swipeStartPosition);
                 return;
             }
 
             if (isSwiping)
             {
                 currentSwipePosition = currentTouch.position.value;
-                Debug.Log("Swipe update " + currentSwipePosition);
             }
 
             if (currentTouch.phase.value == TouchPhase.Ended)

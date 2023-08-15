@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Enlighten.Evotico
 {
-
+    [DisableAutoCreation]
     public partial struct CreatureMovementSystem : ISystem
     {
         private EntityQuery creatureQuery;
